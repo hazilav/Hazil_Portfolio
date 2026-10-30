@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import { getSupabasePublicConfig } from "@/lib/supabase/client";
 
 export interface DatabaseProject {
   id: string;
@@ -14,15 +15,14 @@ export interface DatabaseProject {
 }
 
 export async function getPublishedProjects(): Promise<DatabaseProject[]> {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const { url, anonKey } = getSupabasePublicConfig();
 
-  if (!supabaseUrl || !supabaseAnonKey) {
+  if (!url || !anonKey) {
     console.error("Missing Supabase public credentials");
     return [];
   }
 
-  const supabase = createClient(supabaseUrl, supabaseAnonKey);
+  const supabase = createClient(url, anonKey);
 
   const { data, error } = await supabase
     .from("projects")
