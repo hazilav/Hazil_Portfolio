@@ -52,8 +52,12 @@ export default function MeetingBookingSection() {
 
     startTransition(async () => {
       try {
-        await createBookingAction(formData);
-        setIsSuccess(true);
+        const result = await createBookingAction(formData);
+        if (result.success) {
+          setIsSuccess(true);
+        } else {
+          setServerError(result.error || "Failed to submit booking request. Please try again.");
+        }
       } catch (err: unknown) {
         const error = err as Error;
         setServerError(error.message || "Failed to submit booking request. Please try again.");
